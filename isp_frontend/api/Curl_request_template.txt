@@ -1,0 +1,3 @@
+POST ==> curl -d "foo=bar&bin=go" http://localhost:8088
+GET ==> curl "http://localhost:8088?foo=bar&bin=go"
+HEAD ==> curl -I http://localhost:8088
