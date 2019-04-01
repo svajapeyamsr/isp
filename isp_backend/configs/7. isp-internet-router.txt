@@ -1,8 +1,3 @@
-ISP-INTERNET#sh run
-Building configuration...
-
-
-Current configuration : 1835 bytes
 !
 ! Last configuration change at 20:37:41 UTC Mon Mar 25 2019
 version 15.1
