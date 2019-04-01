@@ -1,7 +1,3 @@
-isp-cust-pe#sh run
-Building configuration...
-
-Current configuration : 4184 bytes
 !
 version 12.2
 no service pad
