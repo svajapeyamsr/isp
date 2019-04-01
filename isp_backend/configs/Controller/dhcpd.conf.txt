@@ -1,0 +1,104 @@
+default-lease-time 600;
+max-lease-time 7200;
+
+
+subnet 172.16.0.0 netmask 255.255.0.0 {
+
+host ctl2 {
+  hardware ethernet 14:18:77:3b:ac:c7;
+  fixed-address 172.16.16.4;
+  option subnet-mask 255.255.0.0;
+  #option routers 172.16.16.10;
+  #option domain-name-servers 8.8.8.8;
+}
+
+
+host ovs1 {
+  hardware ethernet 00:26:55:ae:66:20;
+  fixed-address 172.16.16.5;
+  option subnet-mask 255.255.0.0;
+  #option routers 172.16.16.10;
+  #option domain-name-servers 8.8.8.8;
+}
+
+host ovs2 {
+  hardware ethernet 00:26:55:ae:17:74;
+  fixed-address 172.16.16.6;
+  option subnet-mask 255.255.0.0;
+  #option routers 172.16.16.10;
+  #option domain-name-servers 8.8.8.8;
+}
+
+host ovs3 {
+  hardware ethernet 00:25:90:73:2f:55;
+  fixed-address 172.16.16.7;
+  option subnet-mask 255.255.0.0;
+  #option routers 172.16.16.10;
+  #option domain-name-servers 8.8.8.8;
+  }
+
+host ovs4 {
+  hardware ethernet 00:26:55:6b:55:0b;
+  fixed-address 172.16.16.8;
+  option subnet-mask 255.255.0.0;
+  #option routers 172.16.16.10;
+  #option domain-name-servers 8.8.8.8;
+  }
+
+host cp-cpe {
+  hardware ethernet 08:00:27:09:26:36;
+  fixed-address 172.16.16.9;
+  option subnet-mask 255.255.0.0;
+  #option routers 172.16.16.10;
+  #option domain-name-servers 8.8.8.8;
+  option bootfile-name "http://172.16.16.1/CPE.txt";
+  }
+
+host cp-pe {
+  hardware ethernet 08:00:27:82:00:a7;
+  fixed-address 172.16.16.10;
+  option subnet-mask 255.255.0.0;
+  option routers 172.16.0.2;
+  option domain-name-servers 8.8.8.8;
+  option bootfile-name "http://172.16.16.1/PE.txt";
+  }
+
+host R1 {
+  hardware ethernet 00:23:33:0e:49:51;
+  fixed-address 172.16.16.11;
+  option subnet-mask 255.255.0.0;
+  option tftp-server-name "172.16.16.1";
+  option bootfile-name "isp-r1.txt";
+  }
+
+
+host R2 {
+  hardware ethernet 00:1d:e5:60:1a:e1;
+  fixed-address 172.16.16.12;
+  option subnet-mask 255.255.0.0;
+  option tftp-server-name "172.16.16.1";
+  option bootfile-name "isp-r2.txt";
+  }
+
+
+host cust-pe {
+  hardware ethernet 00:09:b7:cc:c6:00;
+  fixed-address 172.16.16.3;
+  option subnet-mask 255.255.0.0;
+  }
+
+}
+
+subnet 10.0.10.0 netmask 255.255.255.0 {
+  range 10.0.10.10 10.0.10.30;
+  option routers 10.0.10.1;
+  option domain-name-servers 10.0.10.2;
+
+}
+
+
+subnet 10.0.20.0 netmask 255.255.255.0 {
+  range 10.0.20.10 10.0.20.30;
+  option routers 10.0.20.1;
+  option domain-name-servers 10.0.20.2;
+}

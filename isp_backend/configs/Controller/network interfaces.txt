@@ -1,0 +1,32 @@
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto enp2s0
+iface enp2s0 inet static
+        address 172.16.16.1
+        netmask 255.255.0.0
+        network 172.16.0.0
+        broadcast 172.16.255.255
+        gateway 172.16.0.2
+        # dns-* options are implemented by the resolvconf package, if installed
+        dns-nameservers 8.8.8.8
+
+
+#auto enp4s0
+#iface enp4s0 inet manual
+
+auto enp4s0.10
+iface enp4s0.10 inet static
+        address 10.0.10.2
+        netmask 255.255.255.0
+
+
+auto enp4s0.20
+iface enp4s0.20 inet static
+        address 10.0.20.2
+        netmask 255.255.255.0

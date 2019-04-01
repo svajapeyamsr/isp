@@ -1,0 +1,148 @@
+! 
+!
+version 12.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname isp-mgmt-sw1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+username angn privilege 15 secret 5 $1$xs6L$hEXgMCIK8PvexPdP72cGM0
+no aaa new-model
+system mtu routing 1500
+vtp mode transparent
+ip routing
+ip domain-name angn
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+no spanning-tree vlan 1,7
+!
+vlan internal allocation policy ascending
+!
+vlan 100
+!
+ip ssh version 2
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/1
+ description towards isp-ctl1
+ switchport access vlan 100
+!
+interface FastEthernet0/2
+ description towards ngn-vpn-sw
+ switchport access vlan 100
+!
+interface FastEthernet0/3
+ description towards ip-cust-pe(right)
+ switchport access vlan 100
+!
+interface FastEthernet0/4
+!
+interface FastEthernet0/5
+ description towards CPE(left-CP side)
+ switchport access vlan 100
+!
+interface FastEthernet0/6
+ description towards PE(CP-side)
+ switchport access vlan 100
+!
+interface FastEthernet0/7
+ description towards R1
+ switchport access vlan 100
+!
+interface FastEthernet0/8
+ description towards R2
+ switchport access vlan 100
+!
+interface FastEthernet0/9
+ description towards isp-ctl2
+ switchport access vlan 100
+!
+interface FastEthernet0/10
+!
+interface FastEthernet0/11
+ description towards ovs1
+ switchport access vlan 100
+!
+interface FastEthernet0/12
+ description towards ovs2
+ switchport access vlan 100
+!
+interface FastEthernet0/13
+ description towards ovs3
+ switchport access vlan 100
+!
+interface FastEthernet0/14
+!
+interface FastEthernet0/15
+!
+interface FastEthernet0/16
+!
+interface FastEthernet0/17
+!
+interface FastEthernet0/18
+ description towards ovs4
+ switchport access vlan 100
+!
+interface FastEthernet0/19
+!
+interface FastEthernet0/20
+!
+interface FastEthernet0/21
+!
+interface FastEthernet0/22
+!
+interface FastEthernet0/23
+!
+interface FastEthernet0/24
+!
+interface GigabitEthernet0/1
+!
+interface GigabitEthernet0/2
+!
+interface Vlan1
+ no ip address
+!
+interface Vlan100
+ description OOB management network
+ ip address 172.16.16.2 255.255.0.0
+!
+ip http server
+ip http secure-server
+!
+!
+ip route 0.0.0.0 0.0.0.0 172.16.0.2
+!
+logging esm config
+!
+!
+!
+line con 0
+line vty 0 4
+ login local
+ transport input all
+line vty 5 15
+ login local
+ transport input all
+!
+end

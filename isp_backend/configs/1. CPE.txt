@@ -1,0 +1,57 @@
+! device: CPE (vEOS, EOS-4.21.1.1F)
+!
+! boot system flash:/vEOS-lab.swi
+!
+transceiver qsfp default-mode 4x10G
+!
+hostname CPE
+!
+spanning-tree mode mstp
+!
+no aaa root
+!
+username angn privilege 15 secret sha512 $6$xlTFz0PayqRYGLfO$LJ07EJxqsDAOHPluS2HvlV18ZM8jo1srlNj/HhiYIpGXxqEHq9wkJFq3a1N9sy2fh2m9wZrw3Pjd5Hfa8O6zf0
+!
+vlan 10,20
+!
+interface Ethernet1
+   no shutdown
+   description towards CP switch/OVS
+   switchport mode trunk
+!
+interface Ethernet2
+   description towards CISCO switch and ISP side
+   no shutdown
+   no switchport
+   ip address 192.168.100.1/24
+!
+interface Loopback1
+   ip address 2.2.2.2/32
+!
+interface Management1
+   ip address dhcp
+!
+interface Vlan10
+   ip address 10.0.10.3/24
+!
+interface Vlan20
+!
+interface Vxlan1
+   vxlan source-interface Loopback1
+   vxlan udp-port 4789
+   vxlan vlan 10 vni 10
+   vxlan vlan 20 vni 20
+   vxlan flood vtep 1.1.1.1
+!
+ip routing
+!
+router ospf 1
+   network 2.2.2.2/32 area 0.0.0.0
+   network 192.168.100.1/32 area 0.0.0.0
+   max-lsa 12000
+!
+management api http-commands
+   protocol http port 8080
+   no shutdown
+!
+end

@@ -1,0 +1,66 @@
+! device: PE (vEOS, EOS-4.21.1.1F)
+!
+! boot system flash:/vEOS-lab.swi
+!
+transceiver qsfp default-mode 4x10G
+!
+hostname PE
+!
+spanning-tree mode rapid-pvst
+!
+no aaa root
+!
+username angn privilege 15 secret sha512 $6$2X.lGZa0./a4.tOT$LBIjW6AGmjEMrzMzrbWDeDKQBxoNUh8bGMHu2/OgQYOKBDgZbez/mt.VejeugqlnxO2FCM2pDd0o1iaqBB6QX/
+!
+vlan 10,20
+!
+interface Ethernet1
+   no shutdown
+   description trunk port towards ovs
+   switchport mode trunk
+!
+interface Ethernet2
+   description towards CISCO,CPE and CP
+   no shutdown
+   no switchport
+   ip address 192.168.150.2/24
+!
+interface Ethernet3
+   description towards internet
+   no shutdown
+   no switchport
+   ip address 20.20.20.2/24
+!
+interface Loopback1
+   ip address 1.1.1.1/32
+!
+interface Management1
+   ip address dhcp
+!
+interface Vlan10
+   ip address 10.0.10.1/24
+!
+interface Vlan20
+   ip address 10.0.20.1/24
+!
+interface Vxlan1
+   vxlan source-interface Loopback1
+   vxlan udp-port 4789
+   vxlan vlan 10 vni 10
+   vxlan vlan 20 vni 20
+   vxlan flood vtep 2.2.2.2
+!
+ip route 0.0.0.0/0 20.20.20.1
+!
+ip routing
+!
+router ospf 1
+   network 1.1.1.1/32 area 0.0.0.0
+   network 192.168.150.0/24 area 0.0.0.0
+   max-lsa 12000
+!
+management api http-commands
+   protocol http port 8080
+   no shutdown
+!
+end
