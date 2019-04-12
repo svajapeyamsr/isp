@@ -29,9 +29,9 @@ class SimpleSwitch13(app_manager.RyuApp):
         ryu_vm = {
             "device_type": "linux",
             "ip": "10.10.10.40",
-            "username": "ryu",
-            "password": "ryu",
-            "secret": "ryu",
+            "username": "sdn",
+            "password": "sdn",
+            "secret": "sdn",
     	}
     	net_connect = ConnectHandler(**ryu_vm)
     	net_connect.enable()
@@ -41,9 +41,9 @@ class SimpleSwitch13(app_manager.RyuApp):
 	#information into variable so that the dictionary mapping does not
 	#have to be learned again
 
-	if os.path.exists("/home/ryu/state.conf"):
-	    print("State configuration file exists. Importing from /home/ryu/state.conf...")	
-	    with open("/home/ryu/state.conf","r") as state_file:
+	if os.path.exists("/home/sdn/state.conf"):
+	    print("State configuration file exists. Importing from state.conf...")	
+	    with open("/home/sdn/state.conf","r") as state_file:
 	        lines = state_file.readlines()
 	    if lines:
 	        self.ip_to_port = ast.literal_eval(lines[0][:-1])
@@ -112,7 +112,6 @@ class SimpleSwitch13(app_manager.RyuApp):
         pkt = packet.Packet(msg.data)
         eth = pkt.get_protocols(ethernet.ethernet)[0]
 	pkt_ipv4 = pkt.get_protocol(ipv4.ipv4)
-
         if eth.ethertype == ether_types.ETH_TYPE_LLDP:
             # ignore lldp packet
             return
@@ -125,7 +124,7 @@ class SimpleSwitch13(app_manager.RyuApp):
 
 	self.mac_to_port[dpid][src] = in_port
 
-        if dst in self.mac_to_port[dpid]:
+        if dst in self.mac_to_port[dpid] and eth.ethertype == 0x0800:
             out_port = self.mac_to_port[dpid][dst]
         else:
             out_port = ofproto.OFPP_FLOOD
@@ -147,11 +146,11 @@ class SimpleSwitch13(app_manager.RyuApp):
 	    #Write the current state (dictionary) to a file state.conf
 	    #and transfer the file to the backup server to maintain synchronization
 
-	    with open("/home/ryu/state.conf","w+") as state_file:
+	    with open("/home/sdn/state.conf","w+") as state_file:
                 state_file.write(str(self.ip_to_port)+"\n")
 		state_file.write(str(self.mac_to_port)+"\n")
 	    
-            self.scp_conn.scp_transfer_file("/home/ryu/state.conf","state.conf")
+            self.scp_conn.scp_transfer_file("/home/sdn/state.conf","state.conf")
 
 	    if ip_dst in self.ip_to_port[dpid]:
 		out_port = self.ip_to_port[dpid][ip_dst]
@@ -164,7 +163,8 @@ class SimpleSwitch13(app_manager.RyuApp):
 	    idle_timeout = 5
 
 	    if out_port != ofproto.OFPP_FLOOD:
-		    match = parser.OFPMatch(in_port=in_port, eth_type=2048 ,ipv4_dst=ip_dst, ipv4_src=ip_src)
+                    IP = pkt.get_protocols(ipv4.ipv4)[0]
+		    match = parser.OFPMatch(in_port=in_port, eth_type=2048 ,ip_proto=IP.proto,ipv4_dst=ip_dst, ipv4_src=ip_src)
 		    # verify if we have a valid buffer_id, if yes avoid to send both
 		    # flow_mod & packet_out
 		    if msg.buffer_id != ofproto.OFP_NO_BUFFER:
