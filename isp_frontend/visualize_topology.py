@@ -143,6 +143,9 @@ def draw_topology(switches, links):
 
 def graph_topo_info():
     switches, links= get_topo_info()
+    print(switches)
+    print(links)
+    
     if switches:
         draw_topology(switches, links)
 
