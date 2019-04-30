@@ -30,7 +30,10 @@ def non_duplicate(links_info):
         #interchanged duplicate
         elif duplicate_tuple in final_links_info:
             continue
-        
+
+        else:
+            final_links_info.append(element)
+            
     return(final_links_info)
 
 
@@ -38,15 +41,15 @@ def non_duplicate(links_info):
 def get_topo_info():
 
     #link_dict_str= requests.get("http://{}:8080/misc/link_dict".format(CONTROLLER_IP))
-    link_dict_str= '''{"7610470746945": {"2": [270559499225422, 2, true]}, "270559499225422": {"2": [7610470746945, 2, true]}}'''
-    
+    #link_dict_str= '''{"7610470746945": {"2": [270559499225422, 2, true]}, "270559499225422": {"2": [7610470746945, 2, true]}}'''
+    link_dict_str= '''{"1": {"1": [2, 2, true]}, "2": {"2": [1, 1, true]}, "3": {"2": [2, 1, true]}}'''
     
     link_dict= json.loads(link_dict_str)
     
-    
+    #print(link_dict)
     for dpid in link_dict.items():
         switches.append(dpid[0])
-        
+        #print(dpid)
         source_ports= []
         dest_ports= []
         dest_dpids= []
@@ -56,6 +59,7 @@ def get_topo_info():
         dest_items= dpid[1]
         
         for item in dest_items.items():
+            #print(item)
             source_ports.append(item[0])
             dest_dpids.append(item[1][0])
             dest_ports.append(item[1][1])
@@ -68,15 +72,18 @@ def get_topo_info():
         
         
         for i in range(0, len(source_ports)):
-            links_info.append((source_dpid, dest_dpids[i],
+            links_info.append((source_dpid, str(dest_dpids[i]),
                               {'src_port': source_ports[i],
-                               'dst_port': dest_ports[i],
+                               'dst_port': str(dest_ports[i]),
                                'status': link_status[i]}))
             
 
-
+        #print(links_info) 
+    #print("**dup")
+    #print(links_info)
     final_links_info= non_duplicate(links_info)
-        
+    #print("**non dup")
+    #print(final_links_info)
     return(switches, final_links_info)
 
 def check_link_status(links):
@@ -152,6 +159,7 @@ def graph_topo_info():
 
 if __name__ == "__main__":
     switches, links= get_topo_info()
+    print(switches)
+    print(links)
     if switches:
         draw_topology(switches, links)
-
